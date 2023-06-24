@@ -1,0 +1,31 @@
+{% extends 'homepage.html' %}
+{% block addcss %}
+    <link rel="stylesheet" href="{{url_for('static',filename='table.css')}}">
+{% endblock addcss %}
+{% block content %}
+{% if data=='empty' %}
+<b>No Results found</b>
+{% else %}
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>link</th>
+                <th>Date</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in data %}
+            <tr> 
+                <td>{{i[1]}}</td>
+                <td><a href="{{url_for('vnid',uid=i[0])}}">view</a></td>
+                <td>{{i[2]}}</td>
+                <td><a href="{{url_for('update',uid=i[0])}}">update</a></td>
+                <td><a href="{{url_for('delete',uid=i[0])}}">delete</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+{% endblock %}

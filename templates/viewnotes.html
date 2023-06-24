@@ -1,0 +1,16 @@
+{% extends 'homepage.html' %}
+{% block addcss %}
+ <link rel="stylesheet" href="{{url_for('static',filename='addnotes.css')}}">
+{% endblock %}
+{% block content %}
+<br>
+    <div class="container">
+        <h1>VIEW NOTES</h1>
+            <label for="titleField">Title:</label>
+            <input type="text" id="titleField" name="title" value='{{title}}' readonly>
+
+            <label for="contentField">Content:</label>
+            <textarea id="contentField" class="content-field" name="content" readonly>{{content}}</textarea>
+            <a href="{{url_for('viewnotes')}}"><button>BACK</button></a>
+    </div>
+{% endblock %}
