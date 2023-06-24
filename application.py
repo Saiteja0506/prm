@@ -1,5 +1,6 @@
 from flask import Flask,flash,abort,redirect,request,render_template,url_for,session,send_file
 import mysql.connector
+import os
 from flask_session import Session
 from itsdangerous import URLSafeTimedSerializer
 from key import secret_key,salt1,salt2
@@ -12,7 +13,20 @@ excel.init_excel(app)
 app.secret_key=secret_key
 app.config['SESSION_TYPE']='filesystem'
 Session(app)
-mydb=mysql.connector.connect(host='localhost',user='root',password='admin',db='prm')
+#mydb=mysql.connector.connect(host='localhost',user='root',password='admin',db='prm')
+
+db=os.environ['RDS_DB_NAME']
+user=os.environ['RDS_USERNAME']
+password=os.environ['RDS_PASSWORD']
+host=os.environ['RDS_HOSTNAME']
+port=os.environ['RDS_PORT']
+with mysql.connector.connect(host= host,user=user,password=password,db=db) as conn:
+    cursor=conn.cursor(buffered=True)
+    cursor.execute('create table if not exists users(username varchar(15) primary key,password varchar(15),email varchar(80),email_status enum("confirmed","not confirmed"))')
+    cursor.execute('create table if not exists notes(nid binary(16) primary key,title tinytext,content text,date timestamp default current_timestamp on update current_timestamp,added_by varchar(15),foreign key(added_by) references users(username))')
+    cursor.execute('create table if not exists files(fid binary(16) primary key,extension varchar(8),filedata longblob,data timestamp default now() on update now(),added_by varchar(15),foreign key(added_by) references users(username))')
+    
+
 @app.route('/')
 def index():
     return render_template('title.html')
@@ -357,4 +371,5 @@ def getdata():
         return excel.make_response_from_array(array_data,'xlsx',filename='notes')
     else:
         return redirect(url_for('login'))
-app.run(debug=True,use_reloader=True)
+if __name__=="__main__":
+    app.run()
