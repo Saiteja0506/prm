@@ -25,8 +25,8 @@ with mysql.connector.connect(host= host,user=user,password=password,db=db) as co
     cursor.execute('create table if not exists users(username varchar(15) primary key,password varchar(15),email varchar(80),email_status enum("confirmed","not confirmed"))')
     cursor.execute('create table if not exists notes(nid binary(16) primary key,title tinytext,content text,date timestamp default current_timestamp on update current_timestamp,added_by varchar(15),foreign key(added_by) references users(username))')
     cursor.execute('create table if not exists files(fid binary(16) primary key,extension varchar(8),filedata longblob,data timestamp default now() on update now(),added_by varchar(15),foreign key(added_by) references users(username))')
-    
 
+mydb=mysql.connector.connect(host= host,user=user,password=password,db=db)
 @app.route('/')
 def index():
     return render_template('title.html')
